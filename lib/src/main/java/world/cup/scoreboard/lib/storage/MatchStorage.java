@@ -1,13 +1,15 @@
 package world.cup.scoreboard.lib.storage;
 
-import world.cup.scoreboard.lib.domain.Match;
+import world.cup.scoreboard.lib.domain.FootballMatch;
 
 import java.util.List;
 
 public interface MatchStorage {
-    Boolean saveMatch(Match match);
+    Boolean saveMatch(FootballMatch match);
 
-    List<Match> getAllMatches();
+    Boolean updateMatch(FootballMatch match);
 
-    List<Match> getAllInProgressMatches();
+    List<FootballMatch> getAllMatches();
+
+    List<FootballMatch> getAllInProgressMatches();
 }

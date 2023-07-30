@@ -1,6 +1,6 @@
 package world.cup.scoreboard.lib;
 
-import world.cup.scoreboard.lib.domain.Match;
+import world.cup.scoreboard.lib.domain.FootballMatch;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ public class WorldCupScoreBoard implements ScoreBoard {
     }
 
     @Override
-    public Boolean updateMatch(String homeTeamName, String awayTeamName, Match.MatchScores newMatchScores) {
+    public Boolean updateMatch(Long matchId, FootballMatch.MatchScores newMatchScores) {
         return null;
     }
 
@@ -26,7 +26,7 @@ public class WorldCupScoreBoard implements ScoreBoard {
     }
 
     @Override
-    public List<Match> getSummaryOfMatchScores() {
+    public List<FootballMatch> getSummaryOfMatchScores() {
         return null;
     }
 }
