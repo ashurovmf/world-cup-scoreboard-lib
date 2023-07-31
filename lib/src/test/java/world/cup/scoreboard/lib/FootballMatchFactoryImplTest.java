@@ -39,4 +39,23 @@ class FootballMatchFactoryImplTest {
         assertEquals("Team names are incorrect", exception.getMessage());
     }
 
+    @Test
+    void finishMatchSuccessfully() {
+        //given
+        FootballMatchFactory factory = new FootballMatchFactoryImpl();
+        String homeTeamName = "HomeTeam";
+        String awayTeamName = "AwayTeam";
+        ZonedDateTime zonedDateTime = ZonedDateTime.now();
+        FootballMatch match = factory.createMatch(homeTeamName, awayTeamName, zonedDateTime);
+        ZonedDateTime endDateTime = zonedDateTime.plusSeconds(1);
+        //when
+        match = factory.finishMatchWithDateTime(match, endDateTime);
+        //then
+        assertNotNull(match);
+        assertEquals(homeTeamName, match.getHomeTeamName());
+        assertEquals(awayTeamName, match.getAwayTeamName());
+        assertEquals(zonedDateTime, match.getStartTime());
+        assertEquals(endDateTime, match.getEndTime());
+    }
+
 }

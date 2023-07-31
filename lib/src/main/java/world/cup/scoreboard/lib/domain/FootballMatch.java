@@ -29,24 +29,10 @@ public class FootballMatch {
     /**
      * Container with current match scores
      */
-    private MatchScores matchScores;
+    private final MatchScores matchScores;
+    private final ZonedDateTime endTime;
 
-    private ZonedDateTime endTime;
 
-    /**
-     * Finish a match using the end date time
-     * @param endTime end time of match
-     */
-    public void finishMatchWithDateTime(ZonedDateTime endTime) {
-        if (endTime == null) {
-            throw new IllegalArgumentException("End time can not be null");
-        }
-        if (this.endTime == null && endTime.isAfter(startTime)) {
-            this.endTime = endTime;
-        } else {
-            throw new IllegalArgumentException("End time value (" + endTime+ ") is incorrect. Or match has been already finished");
-        }
-    }
 
     /**
      * Total match score

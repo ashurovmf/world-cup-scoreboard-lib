@@ -4,6 +4,9 @@ import world.cup.scoreboard.lib.domain.FootballMatch;
 
 import java.util.List;
 
+/**
+ * Cover functionality of persisting matches
+ */
 public interface MatchStorage {
 
     FootballMatch saveMatch(FootballMatch match);

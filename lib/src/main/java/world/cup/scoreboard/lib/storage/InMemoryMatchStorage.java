@@ -7,7 +7,11 @@ import world.cup.scoreboard.lib.domain.FootballMatch;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+/**
+ * In-memory-like implementation of persisting matches
+ */
 public class InMemoryMatchStorage implements MatchStorage {
 
     Logger logger = LoggerFactory.getLogger(InMemoryMatchStorage.class);
@@ -28,7 +32,7 @@ public class InMemoryMatchStorage implements MatchStorage {
     }
 
     @Override
-    public FootballMatch saveMatch(FootballMatch match) {
+    public synchronized FootballMatch saveMatch(FootballMatch match) {
         if (logger.isDebugEnabled()) {
             logger.debug("Save match " + match);
         }
@@ -47,7 +51,7 @@ public class InMemoryMatchStorage implements MatchStorage {
     }
 
     @Override
-    public FootballMatch updateMatch(FootballMatch match) {
+    public synchronized FootballMatch updateMatch(FootballMatch match) {
         if (logger.isDebugEnabled()) {
             logger.debug("Update match " + match);
         }
@@ -61,7 +65,7 @@ public class InMemoryMatchStorage implements MatchStorage {
     }
 
     @Override
-    public FootballMatch fetchMatch(Long id) {
+    public synchronized FootballMatch fetchMatch(Long id) {
         if (logger.isDebugEnabled()) {
             logger.debug("Try to fetch match using id " + id);
         }
@@ -72,13 +76,17 @@ public class InMemoryMatchStorage implements MatchStorage {
     }
 
     @Override
-    public List<FootballMatch> getAllMatches() {
+    public synchronized List<FootballMatch> getAllMatches() {
         return storage.values().stream().toList();
     }
 
+    /**
+     *
+     * @return matches without end time
+     */
     @Override
-    public List<FootballMatch> getAllInProgressMatches() {
-        return storage.values().stream().filter(m -> m.fetchEndTime().isEmpty()).toList();
+    public synchronized List<FootballMatch> getAllInProgressMatches() {
+        return storage.values().stream().filter(m -> m.fetchEndTime().isEmpty()).collect(Collectors.toList());
     }
 
     private synchronized Long generateNextId() {

@@ -4,8 +4,12 @@ import world.cup.scoreboard.lib.domain.FootballMatch;
 import world.cup.scoreboard.lib.storage.MatchStorage;
 
 import java.time.ZonedDateTime;
+import java.util.Comparator;
 import java.util.List;
 
+/**
+ * Implementation of score board for football matches
+ */
 public class WorldCupScoreBoard implements ScoreBoard {
     FootballMatchFactory matchFactory;
     MatchStorage storage;
@@ -16,20 +20,20 @@ public class WorldCupScoreBoard implements ScoreBoard {
     }
 
     @Override
-    public Long createMatch(String homeTeamName, String awayTeamName) {
+    public synchronized Long createMatch(String homeTeamName, String awayTeamName) {
         FootballMatch match = matchFactory.createMatch(homeTeamName, awayTeamName, ZonedDateTime.now());
         match = storage.saveMatch(match);
         return match.getId();
     }
 
     @Override
-    public Boolean updateMatch(Long matchId, FootballMatch.MatchScores newMatchScores) {
+    public synchronized Boolean updateMatch(Long matchId, FootballMatch.MatchScores newMatchScores) {
         try {
             FootballMatch match = storage.fetchMatch(matchId);
             match = match.toBuilder()
                     .matchScores(newMatchScores)
                     .build();
-            match = storage.updateMatch(match);
+            storage.updateMatch(match);
             return Boolean.TRUE;
         } catch (Exception e) {
             return Boolean.FALSE;
@@ -38,17 +42,18 @@ public class WorldCupScoreBoard implements ScoreBoard {
     }
 
     @Override
-    public void finishMatch(String homeTeamName, String awayTeamName) {
-
+    public synchronized void finishMatch(Long matchId) {
+        FootballMatch match = storage.fetchMatch(matchId);
+        match = matchFactory.finishMatchWithDateTime(match, ZonedDateTime.now());
+        storage.updateMatch(match);
     }
 
     @Override
-    public void finishMatch(Long matchId) {
-
-    }
-
-    @Override
-    public List<FootballMatch> getSummaryOfMatchScores() {
-        return null;
+    public synchronized List<FootballMatch> getSummaryOfMatchScores() {
+        List<FootballMatch> allInProgressMatches = storage.getAllInProgressMatches();
+        allInProgressMatches.sort(Comparator
+                .comparingInt(FootballMatch::getTotalScores)
+                .thenComparing(FootballMatch::getStartTime).reversed());
+        return allInProgressMatches;
     }
 }

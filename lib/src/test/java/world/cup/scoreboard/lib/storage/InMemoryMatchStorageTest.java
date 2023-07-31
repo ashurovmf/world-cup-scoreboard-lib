@@ -1,10 +1,13 @@
 package world.cup.scoreboard.lib.storage;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import world.cup.scoreboard.lib.domain.FootballMatch;
 import world.cup.scoreboard.lib.FootballMatchFactory;
+import world.cup.scoreboard.lib.FootballMatchFactoryImpl;
+import world.cup.scoreboard.lib.domain.FootballMatch;
 
 import java.time.ZonedDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +17,12 @@ class InMemoryMatchStorageTest {
 
     FootballMatchFactory footballMatchFactory;
     Map<Long, FootballMatch> storage;
+
+    @BeforeEach
+    void resetState() {
+        footballMatchFactory = new FootballMatchFactoryImpl();
+        storage = new HashMap<>();
+    }
 
 
     @Test
@@ -26,7 +35,7 @@ class InMemoryMatchStorageTest {
         FootballMatch match = footballMatchFactory.createMatch(homeTeamName, awayTeamName, zonedDateTime);
 
         //when
-        matchStorage.saveMatch(match);
+        match = matchStorage.saveMatch(match);
         //then
         assertEquals(1, storage.size());
         FootballMatch storedMatch = storage.get(match.getId());
@@ -42,13 +51,13 @@ class InMemoryMatchStorageTest {
         ZonedDateTime zonedDateTime = ZonedDateTime.now();
         MatchStorage matchStorage = new InMemoryMatchStorage(storage);
         FootballMatch match = footballMatchFactory.createMatch(homeTeamName, awayTeamName, zonedDateTime);
-        matchStorage.saveMatch(match);
+        match = matchStorage.saveMatch(match);
         match = match.toBuilder()
                 .matchScores(new FootballMatch.MatchScores(match.getMatchScores().homeTeamScore(), 1))
                 .build();
 
         //when
-        matchStorage.updateMatch(match);
+        match = matchStorage.updateMatch(match);
 
         //then
         assertEquals(1, storage.size());
@@ -66,7 +75,7 @@ class InMemoryMatchStorageTest {
         ZonedDateTime zonedDateTime = ZonedDateTime.now();
         MatchStorage matchStorage = new InMemoryMatchStorage(storage);
         FootballMatch match = footballMatchFactory.createMatch(homeTeamName, awayTeamName, zonedDateTime);
-        matchStorage.saveMatch(match);
+        match = matchStorage.saveMatch(match);
         //when
         List<FootballMatch> allMatches = matchStorage.getAllMatches();
 
@@ -86,7 +95,7 @@ class InMemoryMatchStorageTest {
         ZonedDateTime zonedDateTime = ZonedDateTime.now();
         MatchStorage matchStorage = new InMemoryMatchStorage(storage);
         FootballMatch match = footballMatchFactory.createMatch(homeTeamName, awayTeamName, zonedDateTime);
-        matchStorage.saveMatch(match);
+        match = matchStorage.saveMatch(match);
         //when
         List<FootballMatch> allMatches = matchStorage.getAllInProgressMatches();
 

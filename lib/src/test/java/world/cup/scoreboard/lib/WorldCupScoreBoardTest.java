@@ -3,6 +3,7 @@ package world.cup.scoreboard.lib;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import world.cup.scoreboard.lib.domain.FootballMatch;
+import world.cup.scoreboard.lib.storage.InMemoryMatchStorage;
 import world.cup.scoreboard.lib.storage.MatchStorage;
 
 import java.util.List;
@@ -16,7 +17,7 @@ class WorldCupScoreBoardTest {
 
     @BeforeEach
     void cleanStorages() {
-        matchStorage = null;
+        matchStorage = new InMemoryMatchStorage();
         scoreBoard = new WorldCupScoreBoard(new FootballMatchFactoryImpl(), matchStorage);
     }
 
@@ -48,7 +49,8 @@ class WorldCupScoreBoardTest {
         Long matchId = scoreBoard.createMatch(homeTeamName, awayTeamName);
 
         //when
-        Boolean successfulUpdate = scoreBoard.updateMatch(matchId, new FootballMatch.MatchScores(0, 1));
+        Boolean successfulUpdate = scoreBoard.updateMatch(matchId,
+                new FootballMatch.MatchScores(0, 1));
 
         //then
         assertNotNull(successfulUpdate);
@@ -63,13 +65,14 @@ class WorldCupScoreBoardTest {
     }
 
     @Test
-    void finishMatchSuccessfully() {
+    void finishMatchSuccessfully() throws InterruptedException {
         //given
         String homeTeamName = "HomeTeam";
         String awayTeamName = "AwayTeam";
         Long matchId = scoreBoard.createMatch(homeTeamName, awayTeamName);
 
         //when
+        Thread.sleep(50);
         scoreBoard.finishMatch(matchId);
 
         //then
@@ -98,5 +101,16 @@ class WorldCupScoreBoardTest {
         assertEquals(0, match.getMatchScores().homeTeamScore());
         assertEquals(0, match.getMatchScores().awayTeamScore());
         assertEquals(0, match.getTotalScores());
+    }
+
+    @Test
+    void getSummaryOfMatchScoresSuccessfullyForNoMatch() {
+        //given
+
+        //when
+        List<FootballMatch> summaryOfMatchScores = scoreBoard.getSummaryOfMatchScores();
+
+        //then
+        assertEquals(0, summaryOfMatchScores.size());
     }
 }

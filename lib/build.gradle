@@ -2,6 +2,10 @@ plugins {
     // Apply the java-library plugin for API and implementation separation.
     id 'java-library'
 }
+ext {
+    SLF4J_VERSION = '2.0.7'
+    LOMBOK_VERSION = '1.18.28'
+}
 
 sourceCompatibility = JavaVersion.VERSION_17
 targetCompatibility = JavaVersion.VERSION_17
@@ -26,9 +30,10 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
 
     api 'org.apache.commons:commons-math3:3.6.1'
-    implementation 'org.slf4j:slf4j-api:2.0.7'
-    compileOnly 'org.projectlombok:lombok:1.18.28'
-    annotationProcessor 'org.projectlombok:lombok:1.18.28'
+    implementation "org.slf4j:slf4j-api:${SLF4J_VERSION}"
+    testImplementation "org.slf4j:slf4j-simple:${SLF4J_VERSION}"
+    compileOnly "org.projectlombok:lombok:${LOMBOK_VERSION}"
+    annotationProcessor "org.projectlombok:lombok:${LOMBOK_VERSION}"
 }
 
 tasks.named('test') {
