@@ -15,9 +15,9 @@ class WorldCupScoreBoardTest {
     ScoreBoard scoreBoard;
 
     @BeforeEach
-    void cleanStorages(){
+    void cleanStorages() {
         matchStorage = null;
-        scoreBoard = new WorldCupScoreBoard();
+        scoreBoard = new WorldCupScoreBoard(new FootballMatchFactoryImpl(), matchStorage);
     }
 
     @Test

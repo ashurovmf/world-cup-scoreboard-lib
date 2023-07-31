@@ -12,7 +12,7 @@ import java.util.Optional;
  */
 @Data
 @AllArgsConstructor
-@Builder
+@Builder(toBuilder=true)
 public class FootballMatch {
 
     /**
@@ -32,14 +32,6 @@ public class FootballMatch {
     private MatchScores matchScores;
 
     private ZonedDateTime endTime;
-
-    FootballMatch(Long id, String homeTeamName, String awayTeamName, ZonedDateTime startTime, MatchScores matchScores) {
-        this.id = id;
-        this.homeTeamName = homeTeamName;
-        this.awayTeamName = awayTeamName;
-        this.startTime = startTime;
-        this.matchScores = matchScores;
-    }
 
     /**
      * Finish a match using the end date time

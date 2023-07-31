@@ -2,7 +2,7 @@ package world.cup.scoreboard.lib.storage;
 
 import org.junit.jupiter.api.Test;
 import world.cup.scoreboard.lib.domain.FootballMatch;
-import world.cup.scoreboard.lib.domain.FootballMatchFactory;
+import world.cup.scoreboard.lib.FootballMatchFactory;
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -43,7 +43,7 @@ class InMemoryMatchStorageTest {
         MatchStorage matchStorage = new InMemoryMatchStorage(storage);
         FootballMatch match = footballMatchFactory.createMatch(homeTeamName, awayTeamName, zonedDateTime);
         matchStorage.saveMatch(match);
-        match = match.builder()
+        match = match.toBuilder()
                 .matchScores(new FootballMatch.MatchScores(match.getMatchScores().homeTeamScore(), 1))
                 .build();
 

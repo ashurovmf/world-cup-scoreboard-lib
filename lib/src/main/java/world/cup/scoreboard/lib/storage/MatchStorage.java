@@ -5,9 +5,12 @@ import world.cup.scoreboard.lib.domain.FootballMatch;
 import java.util.List;
 
 public interface MatchStorage {
-    Boolean saveMatch(FootballMatch match);
 
-    Boolean updateMatch(FootballMatch match);
+    FootballMatch saveMatch(FootballMatch match);
+
+    FootballMatch updateMatch(FootballMatch match);
+
+    FootballMatch fetchMatch(Long id);
 
     List<FootballMatch> getAllMatches();
 

@@ -1,4 +1,6 @@
-package world.cup.scoreboard.lib.domain;
+package world.cup.scoreboard.lib;
+
+import world.cup.scoreboard.lib.domain.FootballMatch;
 
 import java.time.ZonedDateTime;
 
