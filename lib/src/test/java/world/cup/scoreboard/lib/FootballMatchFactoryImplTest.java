@@ -26,7 +26,7 @@ class FootballMatchFactoryImplTest {
     }
 
     @Test
-    void createMatchWithShortName() {
+    void canNotCreateMatchWithShortNames() {
         //given
         FootballMatchFactory factory = new FootballMatchFactoryImpl();
         String homeTeamName = "Ho";
@@ -56,6 +56,40 @@ class FootballMatchFactoryImplTest {
         assertEquals(awayTeamName, match.getAwayTeamName());
         assertEquals(zonedDateTime, match.getStartTime());
         assertEquals(endDateTime, match.getEndTime());
+    }
+
+    @Test
+    void conNotFinishMatchWithDateTimeInPast() {
+        //given
+        FootballMatchFactory factory = new FootballMatchFactoryImpl();
+        String homeTeamName = "HomeTeam";
+        String awayTeamName = "AwayTeam";
+        ZonedDateTime zonedDateTime = ZonedDateTime.now();
+        FootballMatch match = factory.createMatch(homeTeamName, awayTeamName, zonedDateTime);
+        ZonedDateTime endDateTime = zonedDateTime.minusSeconds(1);
+        //when
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> factory.finishMatchWithDateTime(match, endDateTime));
+        //then
+        assertEquals("End time value is incorrect", exception.getMessage());
+    }
+
+    @Test
+    void conNotFinishMatchAlreadyFinished() {
+        //given
+        FootballMatchFactory factory = new FootballMatchFactoryImpl();
+        String homeTeamName = "HomeTeam";
+        String awayTeamName = "AwayTeam";
+        ZonedDateTime zonedDateTime = ZonedDateTime.now();
+        FootballMatch match = factory.createMatch(homeTeamName, awayTeamName, zonedDateTime);
+        ZonedDateTime endDateTime = zonedDateTime.plusSeconds(1);
+        final FootballMatch savedMatch = factory.finishMatchWithDateTime(match, endDateTime);
+
+        //when
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> factory.finishMatchWithDateTime(savedMatch, endDateTime));
+        //then
+        assertEquals("Match has been already finished", exception.getMessage());
     }
 
 }

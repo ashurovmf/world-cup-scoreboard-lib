@@ -18,8 +18,9 @@ The scoreboard supports the following operations:
 Id generation is simple and put into MatchStorage.
 2. Error handling is keeping simple: no transactions on persisting level,
 thread-saving is done by basic java synchronize mechanism.
-3. Finished matches are kept in storage for statistic purposes. We can easily flush them.
-4. Behaviour test (provided test case with summary) is moved to IT-like test 
+3. Finished matches are kept in storage for statistic purposes. 
+We can easily flush them or move to another storage.
+4. Behaviour test (given example with summary score list) is moved to IT-like test 
 to save time, it should be done by another framework like JBehaviour or Selenium. 
 
 

@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class InMemoryMatchStorageTest {
 
@@ -44,6 +45,22 @@ class InMemoryMatchStorageTest {
     }
 
     @Test
+    void conNotSaveMatchTwice() {
+        //given
+        String homeTeamName = "HomeTeam";
+        String awayTeamName = "AwayTeam";
+        ZonedDateTime zonedDateTime = ZonedDateTime.now();
+        MatchStorage matchStorage = new InMemoryMatchStorage(storage);
+        FootballMatch match = footballMatchFactory.createMatch(homeTeamName, awayTeamName, zonedDateTime);
+        final FootballMatch savedMatch = matchStorage.saveMatch(match);
+
+        //when
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> matchStorage.saveMatch(savedMatch));
+        //then
+        assertEquals("Match object is already in storage", exception.getMessage());
+    }
+
+    @Test
     void updateMatchSuccessfully() {
         //given
         String homeTeamName = "HomeTeam";
@@ -65,6 +82,37 @@ class InMemoryMatchStorageTest {
         assertEquals(homeTeamName, storedMatch.getHomeTeamName());
         assertEquals(awayTeamName, storedMatch.getAwayTeamName());
         assertEquals(1, storedMatch.getMatchScores().awayTeamScore());
+    }
+
+    @Test
+    void conNotUpdateUnsavedMatch() {
+        //given
+        String homeTeamName = "HomeTeam";
+        String awayTeamName = "AwayTeam";
+        ZonedDateTime zonedDateTime = ZonedDateTime.now();
+        MatchStorage matchStorage = new InMemoryMatchStorage(storage);
+        final FootballMatch match = footballMatchFactory.createMatch(homeTeamName, awayTeamName, zonedDateTime);
+
+        //when
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> matchStorage.updateMatch(match));
+        //then
+        assertEquals("There is no object in storage", exception.getMessage());
+    }
+
+    @Test
+    void conNotUpdateMatchWithAnotherID() {
+        //given
+        String homeTeamName = "HomeTeam";
+        String awayTeamName = "AwayTeam";
+        ZonedDateTime zonedDateTime = ZonedDateTime.now();
+        MatchStorage matchStorage = new InMemoryMatchStorage(storage);
+        FootballMatch match = footballMatchFactory.createMatch(homeTeamName, awayTeamName, zonedDateTime);
+        final FootballMatch matchWithIncorrectID = match.toBuilder().id(1000L).build();
+
+        //when
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> matchStorage.updateMatch(matchWithIncorrectID));
+        //then
+        assertEquals("There is no object in storage", exception.getMessage());
     }
 
     @Test
@@ -105,5 +153,17 @@ class InMemoryMatchStorageTest {
         FootballMatch storedMatch = storage.get(match.getId());
         assertEquals(homeTeamName, storedMatch.getHomeTeamName());
         assertEquals(awayTeamName, storedMatch.getAwayTeamName());
+    }
+
+    @Test
+    void getAllInProgressMatchesUsingNoMatch() {
+        //given
+        MatchStorage matchStorage = new InMemoryMatchStorage(storage);
+        //when
+        List<FootballMatch> allMatches = matchStorage.getAllInProgressMatches();
+
+        //then
+        assertEquals(0, storage.size());
+        assertEquals(0, allMatches.size());
     }
 }

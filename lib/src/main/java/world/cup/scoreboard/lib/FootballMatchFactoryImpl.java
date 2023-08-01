@@ -20,7 +20,7 @@ public class FootballMatchFactoryImpl implements FootballMatchFactory {
                 .homeTeamName(homeTeamName)
                 .awayTeamName(awayTeamName)
                 .startTime(startTime)
-                .matchScores(new FootballMatch.MatchScores(0,0))
+                .matchScores(new FootballMatch.MatchScores(0, 0))
                 .build();
     }
 
@@ -30,6 +30,7 @@ public class FootballMatchFactoryImpl implements FootballMatchFactory {
 
     /**
      * Finish a match using the end date time
+     *
      * @param endTime end time of match
      */
     @Override
@@ -40,10 +41,13 @@ public class FootballMatchFactoryImpl implements FootballMatchFactory {
         if (endTime == null) {
             throw new IllegalArgumentException("End time can not be null");
         }
+        if (match.fetchEndTime().isPresent()) {
+            throw new IllegalArgumentException("Match has been already finished");
+        }
         if (getValidator().isCorrectEndTime(match.getStartTime(), endTime)) {
             return match.toBuilder().endTime(endTime).build();
         } else {
-            throw new IllegalArgumentException("End time value (" + endTime+ ") is incorrect. Or match has been already finished");
+            throw new IllegalArgumentException("End time value is incorrect");
         }
     }
 }
