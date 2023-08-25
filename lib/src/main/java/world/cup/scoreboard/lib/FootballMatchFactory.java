@@ -11,5 +11,7 @@ public interface FootballMatchFactory {
 
     FootballMatch createMatch(String homeTeamName, String awayTeamName, ZonedDateTime startTime);
 
+    FootballMatch updateMatchWithWithScores(FootballMatch match, FootballMatch.MatchScores matchScores);
+
     FootballMatch finishMatchWithDateTime(FootballMatch match, ZonedDateTime endTime);
 }

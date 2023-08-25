@@ -15,4 +15,8 @@ public class FootballMatchValidator {
     public boolean isCorrectEndTime(ZonedDateTime startTime, ZonedDateTime endTime) {
         return startTime != null && endTime != null && endTime.isAfter(startTime);
     }
+
+    public boolean isCorrectMatchScores(FootballMatch.MatchScores matchScores) {
+        return matchScores != null && matchScores.homeTeamScore() >= 0 && matchScores.awayTeamScore() >= 0;
+    }
 }

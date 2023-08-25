@@ -6,6 +6,9 @@ import world.cup.scoreboard.lib.domain.FootballMatch;
 import world.cup.scoreboard.lib.storage.InMemoryMatchStorage;
 import world.cup.scoreboard.lib.storage.MatchStorage;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,14 +27,15 @@ class WorldCupScoreBoardIT {
     }
 
     @Test
-    void mainTestCaseGetSummaryUsingSixInProgressMatches() throws InterruptedException {
+    void mainTestCaseGetSummaryUsingSixInProgressMatches() {
         //given
+        ZonedDateTime dateTime = ZonedDateTime.of(1900, 1, 1, 1, 1, 1, 0, ZoneId.of("+01"));
         List<Long> matchIds = new ArrayList<>();
-        matchIds.add(createAndSaveMatch(scoreBoard, "Mexico", "Canada", new FootballMatch.MatchScores(0, 5)));
-        matchIds.add(createAndSaveMatch(scoreBoard, "Spain", "Brazil", new FootballMatch.MatchScores(10, 2)));
-        matchIds.add(createAndSaveMatch(scoreBoard, "Germany", "France", new FootballMatch.MatchScores(2, 2)));
-        matchIds.add(createAndSaveMatch(scoreBoard, "Uruguay", "Italy", new FootballMatch.MatchScores(6, 6)));
-        matchIds.add(createAndSaveMatch(scoreBoard, "Argentina", "Australia", new FootballMatch.MatchScores(3, 1)));
+        matchIds.add(createAndSaveMatch(scoreBoard, "Mexico", "Canada", dateTime.plusSeconds(1), new FootballMatch.MatchScores(0, 5)));
+        matchIds.add(createAndSaveMatch(scoreBoard, "Spain", "Brazil", dateTime.plusSeconds(2), new FootballMatch.MatchScores(10, 2)));
+        matchIds.add(createAndSaveMatch(scoreBoard, "Germany", "France", dateTime.plusSeconds(3), new FootballMatch.MatchScores(2, 2)));
+        matchIds.add(createAndSaveMatch(scoreBoard, "Uruguay", "Italy", dateTime.plusSeconds(4), new FootballMatch.MatchScores(6, 6)));
+        matchIds.add(createAndSaveMatch(scoreBoard, "Argentina", "Australia", dateTime.plusSeconds(5), new FootballMatch.MatchScores(3, 1)));
 
         //when
         List<FootballMatch> summaryOfMatchScores = scoreBoard.getSummaryOfMatchScores();
@@ -70,9 +74,9 @@ class WorldCupScoreBoardIT {
     private static Long createAndSaveMatch(ScoreBoard scoreBoard,
                                            String homeTeamName,
                                            String awayTeamName,
-                                           FootballMatch.MatchScores matchScores) throws InterruptedException {
-        Long matchId = scoreBoard.createMatch(homeTeamName, awayTeamName);
-        Thread.sleep(50);
+                                           ZonedDateTime dateTime,
+                                           FootballMatch.MatchScores matchScores) {
+        Long matchId = scoreBoard.createMatch(homeTeamName, awayTeamName, dateTime);
         if (scoreBoard.updateMatch(matchId, matchScores)) {
             return matchId;
         } else {

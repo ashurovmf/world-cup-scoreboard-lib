@@ -24,6 +24,19 @@ public class FootballMatchFactoryImpl implements FootballMatchFactory {
                 .build();
     }
 
+    @Override
+    public FootballMatch updateMatchWithWithScores(FootballMatch match, FootballMatch.MatchScores matchScores) {
+        if (match == null) {
+            throw new IllegalArgumentException("Match can not be null");
+        }
+        if (!getValidator().isCorrectMatchScores(matchScores)) {
+            throw new IllegalArgumentException("Team scores are incorrect");
+        }
+        return match.toBuilder()
+                .matchScores(matchScores)
+                .build();
+    }
+
     public FootballMatchValidator getValidator() {
         return matchValidator;
     }

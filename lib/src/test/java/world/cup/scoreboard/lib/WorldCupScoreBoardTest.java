@@ -6,6 +6,8 @@ import world.cup.scoreboard.lib.domain.FootballMatch;
 import world.cup.scoreboard.lib.storage.InMemoryMatchStorage;
 import world.cup.scoreboard.lib.storage.MatchStorage;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -65,14 +67,14 @@ class WorldCupScoreBoardTest {
     }
 
     @Test
-    void finishMatchSuccessfully() throws InterruptedException {
+    void finishMatchSuccessfully() {
         //given
         String homeTeamName = "HomeTeam";
         String awayTeamName = "AwayTeam";
-        Long matchId = scoreBoard.createMatch(homeTeamName, awayTeamName);
+        ZonedDateTime dateTime = ZonedDateTime.of(1900, 1, 1, 1, 1, 1, 0, ZoneId.of("+01"));
+        Long matchId = scoreBoard.createMatch(homeTeamName, awayTeamName, dateTime);
 
         //when
-        Thread.sleep(50);
         scoreBoard.finishMatch(matchId);
 
         //then

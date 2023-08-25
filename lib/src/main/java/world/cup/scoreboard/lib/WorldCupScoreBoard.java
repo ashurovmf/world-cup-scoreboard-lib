@@ -14,6 +14,10 @@ public class WorldCupScoreBoard implements ScoreBoard {
     FootballMatchFactory matchFactory;
     MatchStorage storage;
 
+    public WorldCupScoreBoard(MatchStorage storage) {
+        this(new FootballMatchFactoryImpl(), storage);
+    }
+
     public WorldCupScoreBoard(FootballMatchFactory matchFactory, MatchStorage storage) {
         this.matchFactory = matchFactory;
         this.storage = storage;
@@ -21,7 +25,12 @@ public class WorldCupScoreBoard implements ScoreBoard {
 
     @Override
     public synchronized Long createMatch(String homeTeamName, String awayTeamName) {
-        FootballMatch match = matchFactory.createMatch(homeTeamName, awayTeamName, ZonedDateTime.now());
+        return createMatch(homeTeamName, awayTeamName, ZonedDateTime.now());
+    }
+
+    @Override
+    public synchronized Long createMatch(String homeTeamName, String awayTeamName, ZonedDateTime dateTime) {
+        FootballMatch match = matchFactory.createMatch(homeTeamName, awayTeamName, dateTime);
         match = storage.saveMatch(match);
         return match.getId();
     }
@@ -30,9 +39,7 @@ public class WorldCupScoreBoard implements ScoreBoard {
     public synchronized Boolean updateMatch(Long matchId, FootballMatch.MatchScores newMatchScores) {
         try {
             FootballMatch match = storage.fetchMatch(matchId);
-            match = match.toBuilder()
-                    .matchScores(newMatchScores)
-                    .build();
+            match = matchFactory.updateMatchWithWithScores(match, newMatchScores);
             storage.updateMatch(match);
             return Boolean.TRUE;
         } catch (Exception e) {
